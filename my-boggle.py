@@ -56,6 +56,7 @@ def find_valid_words(board, english_words):
 	if len(board) != 4:
 		return valid_words
 	board_letters = set(list(board[0])+list(board[1])+list(board[2])+list(board[3]))
+	#print("BOARD LETTERS", board_letters)
 	for word in english_words:
 		# check if all letters exist in board
 		if board_letters >= set(list(word.upper())):
@@ -67,7 +68,7 @@ def find_valid_words(board, english_words):
 
 
 def is_valid_word(board, word):
-	print("CHECKING BOARD:",board,"FOR WORD:",word)
+	#print("CHECKING BOARD:",board,"FOR WORD:",word)
 	if len(word) == 0:
 		return True
 	board_letters = set(list(board[0])+list(board[1])+list(board[2])+list(board[3]))
@@ -80,25 +81,25 @@ def is_valid_word(board, word):
 				if board[y1][x1] == '*':
 					x = x1
 					y = y1
-		if y-1 > 0 and x-1 > 0 and board[y-1][x-1]==word[0]:
+		if y-1 >= 0 and x-1 >= 0 and board[y-1][x-1]==word[0]:
 			wb = copy.deepcopy(board)
 			wb[y-1][x-1] = '*'
 			wb[y][x] = '#'
 			if is_valid_word(wb,word[1:]):
 				return True
-		if y-1 > 0 and board[y-1][x]==word[0]:
+		if y-1 >= 0 and board[y-1][x]==word[0]:
 			wb = copy.deepcopy(board)
 			wb[y-1][x] = '*'
 			wb[y][x] = '#'
 			if is_valid_word(wb,word[1:]):
 				return True
-		if y-1 > 0 and x+1 < len(board) and board[y-1][x+1]==word[0]:
+		if y-1 >= 0 and x+1 < len(board) and board[y-1][x+1]==word[0]:
 			wb = copy.deepcopy(board)
 			wb[y-1][x+1] = '*'
 			wb[y][x] = '#'
 			if is_valid_word(wb,word[1:]):
 				return True
-		if x-1 > 0 and board[y][x-1]==word[0]:
+		if x-1 >= 0 and board[y][x-1]==word[0]:
 			wb = copy.deepcopy(board)
 			wb[y][x-1] = '*'
 			wb[y][x] = '#'
@@ -110,7 +111,7 @@ def is_valid_word(board, word):
 			wb[y][x] = '#'
 			if is_valid_word(wb,word[1:]):
 				return True
-		if y+1 < len(board) and x-1 > 0 and board[y+1][x-1]==word[0]:
+		if y+1 < len(board) and x-1 >= 0 and board[y+1][x-1]==word[0]:
 			wb = copy.deepcopy(board)
 			wb[y+1][x-1] = '*'
 			wb[y][x] = '#'
@@ -145,6 +146,7 @@ def start_game(board, valid_words):
 	points = 0
 	last_guess = ""
 	possible_total = 0
+	total_words = len(valid_words)
 	for word in valid_words:
 		possible_total += len(word)-2
 	while True:
@@ -152,7 +154,7 @@ def start_game(board, valid_words):
 		print("******** MY BOGGLE *********")
 		print(" ")
 		print("POINTS:", points,'/',possible_total)
-		print(len(guessed_words), "WORDS FOUND:")
+		print("WORDS FOUND:", len(guessed_words), '/', total_words)
 		print(guessed_words)
 		print(" ")
 		for line in board:
@@ -176,7 +178,7 @@ def start_game(board, valid_words):
 				print("CONGRATULATIONS! YOU FOUND ALL THE VALID WORDS! YOUR SCORE: " + str(points))
 				break
 		else:
-			if guess in guessed_words:
+			if guess.upper() in guessed_words:
 				last_guess = guess + " HAS ALREADY BEEN FOUND. TRY AGAIN."
 			else:
 				last_guess = guess + " IS AN INVALID WORD. TRY AGAIN."
@@ -189,10 +191,12 @@ if __name__ == '__main__':
 	english_words = load_words('words_3plus.txt',"set")
 	
 	board = get_random_boggle_board()
+	#board = [['B', 'Y', 'S', 'N'], ['O', 'T', 'C', 'G'], ['B', 'E', 'I', 'I'], ['N', 'S', 'W', 'A']]
 	wb = copy.deepcopy(board)
 	valid_words = find_valid_words(wb, english_words)
+	#print("RESULT:",is_valid_word(wb, "BOY"))
 	
-	print("BOARD:",board)
-	print("valid words:", valid_words)
+	#print("BOARD:",board)
+	#print("valid words:", valid_words)
 	
-	#start_game(board,valid_words)
+	start_game(board,valid_words)
